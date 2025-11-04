@@ -19,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.sp
 import com.inv.e_inventoryupdate.R
+import com.inv.e_inventoryupdate.ui_screen.ui_components.AppStatusBarDynamicColor
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.ExclamationCircle
@@ -30,14 +31,14 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SettingScreen(navController: NavController) {
 
-    val backgroundColor = colorResource(id = R.color.raisin_black)
-//    StatusBarDynamicColor(backgroundColor)
+    val backgroundColor = colorResource(id = R.color.baby_powder)
+    AppStatusBarDynamicColor(backgroundColor)
 
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("My Products", color = Color.White) },
+                title = { Text("My Products", color = colorResource(id = R.color.raisin_black)) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = backgroundColor,
                     titleContentColor = Color.White,

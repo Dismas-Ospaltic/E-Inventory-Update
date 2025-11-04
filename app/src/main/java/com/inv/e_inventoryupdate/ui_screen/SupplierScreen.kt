@@ -3,6 +3,7 @@ package com.inv.e_inventoryupdate.ui_screen
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,8 +19,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.inv.e_inventoryupdate.R
+import com.inv.e_inventoryupdate.ui_screen.ui_components.AppStatusBarDynamicColor
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.ExclamationCircle
@@ -31,14 +34,13 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun SupplierScreen(navController: NavController) {
 
-    val backgroundColor = colorResource(id = R.color.raisin_black)
-//    StatusBarDynamicColor(backgroundColor)
-
+    val backgroundColor = colorResource(id = R.color.baby_powder)
+    AppStatusBarDynamicColor(backgroundColor)
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("My Products", color = Color.White) },
+                title = { Text("Suppliers", color = colorResource(id = R.color.raisin_black)) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = backgroundColor,
                     titleContentColor = Color.White,
@@ -79,6 +81,92 @@ fun SupplierScreen(navController: NavController) {
                         color = colorResource(id = R.color.gray01),
                         fontSize = 16.sp
                     )
+                }
+
+
+                repeat(10){
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 4.dp, vertical = 2.dp)
+                            .clickable {
+
+
+                            },
+                        shape = RoundedCornerShape(4.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White)
+                    ) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+
+                            // 🔹 Top: Product Code + Name
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Column {
+                                    Text(
+                                        text = "added on: 20-05-2024",
+                                        fontSize = 13.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        color = colorResource(id = R.color.gray01)
+                                    )
+                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Text(
+                                        text = "Millan Suppliers",
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = colorResource(id = R.color.coral)
+                                    )
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            Column {
+                                Text(
+                                    text = "email",
+                                    fontSize = 12.sp,
+                                    color = Color.Gray
+                                )
+                                Text(
+                                    text = "supplier@mullan.com",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = colorResource(id = R.color.bleu_de_france)
+                                )
+                            }
+
+                            Column {
+                                Text(
+                                    text = "phone",
+                                    fontSize = 12.sp,
+                                    color = Color.Gray
+                                )
+                                Text(
+                                    text = "+254756474737",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = colorResource(id = R.color.bleu_de_france)
+                                )
+                            }
+
+                            Column {
+                                Text(
+                                    text = "Address",
+                                    fontSize = 12.sp,
+                                    color = Color.Gray
+                                )
+                                Text(
+                                    text = "Makutano CBD oposite holand Electronics",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = colorResource(id = R.color.bleu_de_france)
+                                )
+                            }
+                        }
+                    }
                 }
 
             }

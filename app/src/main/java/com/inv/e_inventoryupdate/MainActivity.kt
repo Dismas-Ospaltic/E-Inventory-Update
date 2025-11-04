@@ -131,8 +131,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.inv.e_inventoryupdate.ui_screen.ui_components.SupplierFab
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.solid.ChartLine
 import compose.icons.fontawesomeicons.solid.ClipboardList
 import compose.icons.fontawesomeicons.solid.Cog
 import compose.icons.fontawesomeicons.solid.Home
@@ -178,8 +180,12 @@ class MainActivity : ComponentActivity() {
                     }
                 },
                 floatingActionButton = {
-                    if (currentRoute == Screen.Inventory.route) { // Show FAB only on Home
+                    if (currentRoute == Screen.Inventory.route) { // Show FAB only on inventory
                         InventoryFab(navController = navController)
+                    }
+
+                    if (currentRoute == Screen.Supplier.route) { // Show FAB only on supplier
+                        SupplierFab(navController = navController)
                     }
 //
                 }
@@ -239,7 +245,7 @@ fun BottomNavigationBar(navController: NavHostController) {
                         when (screen) {
                             is Screen.Inventory -> {
                                 Icon(
-                                    imageVector = FontAwesomeIcons.Solid.Warehouse,
+                                    imageVector = FontAwesomeIcons.Solid.ClipboardList,
                                     contentDescription = "Inventory page",
                                     tint = if (isSelected) selectedColor else unselectedColor,
                                     modifier = Modifier.size(24.dp)
@@ -265,7 +271,7 @@ fun BottomNavigationBar(navController: NavHostController) {
 
                             is Screen.OverView -> {
                                 Icon(
-                                    imageVector = FontAwesomeIcons.Solid.ChartBar,
+                                    imageVector = FontAwesomeIcons.Solid.ChartLine,
                                     contentDescription = "overview",
                                     tint = if (isSelected) selectedColor else unselectedColor,
                                     modifier = Modifier.size(24.dp)
