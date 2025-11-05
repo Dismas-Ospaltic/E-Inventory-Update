@@ -30,12 +30,12 @@ import compose.icons.fontawesomeicons.solid.Plus
 fun SupplierFab(navController: NavController) {
     val primaryColor = colorResource(id = R.color.yellow_green)
     val whiteColor = colorResource(id = R.color.white)
-    var showDialog by remember { mutableStateOf(false) } // State to control popup visibility
+    var showSupplierDialog by remember { mutableStateOf(false) } // State to control popup visibility
 
 
 
     FloatingActionButton(
-        onClick = { showDialog = true },
+        onClick = { showSupplierDialog = true },
         containerColor = primaryColor,
         modifier = Modifier
             .padding(bottom = 32.dp, end = 16.dp)
@@ -58,6 +58,12 @@ fun SupplierFab(navController: NavController) {
                 fontSize = 16.sp
             )
         }
+    }
+
+    if (showSupplierDialog) {
+        AddSupplierPopUp(
+            onDismiss = { showSupplierDialog = false}
+        )
     }
 
 }
