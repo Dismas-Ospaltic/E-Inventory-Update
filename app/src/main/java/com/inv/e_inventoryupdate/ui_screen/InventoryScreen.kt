@@ -22,8 +22,12 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.inv.e_inventoryupdate.R
+import com.inv.e_inventoryupdate.model.StockEntity
+import com.inv.e_inventoryupdate.repository.StockRepository
 import com.inv.e_inventoryupdate.ui_screen.ui_components.AddStockPopUp
 import com.inv.e_inventoryupdate.ui_screen.ui_components.AppStatusBarDynamicColor
+import com.inv.e_inventoryupdate.viewmodel.StockViewModel
+import com.inv.e_inventoryupdate.viewmodel.SupplierViewModel
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.ExclamationCircle
@@ -43,62 +47,65 @@ fun InventoryScreen(navController: NavController) {
     val searchQuery = remember { mutableStateOf("") }
     var showStockDialog by remember { mutableStateOf(false) }
 
+    val stockViewmodel: StockViewModel = koinViewModel()
+    val supplierViewModel: SupplierViewModel = koinViewModel()
+    val suppliers by supplierViewModel.suppliers.collectAsState(initial = emptyList())
+    val stockUpdates by stockViewmodel.stockList.collectAsState(initial = emptyList())
+
 
 //    // 🔹 Step 1: Mock Data
 //    val mockData = remember {
-//        (1..25).map {
+//        (1..10_000).map {
 //            StockItem(
-//                date = if (it <= 10) "2025-08-08"
-//                else if (it <= 20) "2025-08-09"
-//                else "2025-08-10",
+//                date = when {
+//                    it <= 3000 -> "2025-08-08"
+//                    it <= 6000 -> "2025-08-09"
+//                    else -> "2025-08-10"
+//                },
 //                productCode = "CODE${1000 + it}",
 //                productName = "Product $it",
-//                buyPrice = 50 + it,
-//                sellPrice = 70 + it,
-//                category = if (it % 2 == 0) "Dairy" else "Snacks",
-//                quantity = 10 + it
+//                buyPrice = 50 + (it % 100),
+//                sellPrice = 70 + (it % 100),
+//                category = when {
+//                    it % 3 == 0 -> "Dairy"
+//                    it % 3 == 1 -> "Snacks"
+//                    else -> "Beverages"
+//                },
+//                quantity = 10 + (it % 20)
 //            )
 //        }
 //    }
 
 
-    // 🔹 Step 1: Mock Data
-    val mockData = remember {
-        (1..10_000).map {
-            StockItem(
-                date = when {
-                    it <= 3000 -> "2025-08-08"
-                    it <= 6000 -> "2025-08-09"
-                    else -> "2025-08-10"
-                },
-                productCode = "CODE${1000 + it}",
-                productName = "Product $it",
-                buyPrice = 50 + (it % 100),
-                sellPrice = 70 + (it % 100),
-                category = when {
-                    it % 3 == 0 -> "Dairy"
-                    it % 3 == 1 -> "Snacks"
-                    else -> "Beverages"
-                },
-                quantity = 10 + (it % 20)
-            )
-        }
-    }
+
+//    // 🔹 Step 2: Group by Date
+//    val groupedData = mockData.groupBy { it.date }
+//
+//    // 🔹 Step 3: Pagination setup
+//    val itemsPerPage = 10
+//    val totalPages = ceil(mockData.size / itemsPerPage.toFloat()).toInt()
+//    var currentPage by remember { mutableStateOf(1) }
+//
+//    val paginatedData = mockData
+//        .drop((currentPage - 1) * itemsPerPage)
+//        .take(itemsPerPage)
+//        .groupBy { it.date }
 
 
 
-    // 🔹 Step 2: Group by Date
-    val groupedData = mockData.groupBy { it.date }
+    // 🔹 Group stock data by date (like before)
+    val groupedData = stockUpdates.groupBy { it.date }
 
-    // 🔹 Step 3: Pagination setup
+// 🔹 Pagination setup
     val itemsPerPage = 10
-    val totalPages = ceil(mockData.size / itemsPerPage.toFloat()).toInt()
+    val totalPages = ceil(stockUpdates.size / itemsPerPage.toFloat()).toInt().coerceAtLeast(1)
     var currentPage by remember { mutableStateOf(1) }
 
-    val paginatedData = mockData
+    val paginatedData = stockUpdates
         .drop((currentPage - 1) * itemsPerPage)
         .take(itemsPerPage)
         .groupBy { it.date }
+
 
     Scaffold(
         topBar = {
@@ -146,145 +153,11 @@ fun InventoryScreen(navController: NavController) {
                     )
                 }
 
-
-
-//                repeat(10){
-//                    Card(
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .padding(horizontal = 12.dp, vertical = 8.dp)
-//                            .clickable {
-//
-//
-//                            },
-//                        shape = RoundedCornerShape(20.dp),
-//                        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
-//                        colors = CardDefaults.cardColors(containerColor = Color.White)
-//                    ) {
-//                        Column(modifier = Modifier.padding(16.dp)) {
-//
-//                            // 🔹 Top: Product Code + Name
-//                            Row(
-//                                modifier = Modifier.fillMaxWidth(),
-//                                horizontalArrangement = Arrangement.SpaceBetween,
-//                                verticalAlignment = Alignment.CenterVertically
-//                            ) {
-//                                Column {
-//                                    Text(
-//                                        text = "product code: 85949558",
-//                                        fontSize = 13.sp,
-//                                        fontWeight = FontWeight.Medium,
-//                                        color = colorResource(id = R.color.gray01)
-//                                    )
-//                                    Spacer(modifier = Modifier.height(4.dp))
-//                                    Text(
-//                                        text = "millan dairy products",
-//                                        fontSize = 18.sp,
-//                                        fontWeight = FontWeight.SemiBold,
-//                                        color = colorResource(id = R.color.coral)
-//                                    )
-//                                }
-//                            }
-//
-//                            Spacer(modifier = Modifier.height(12.dp))
-//
-//                            // 🔹 Price Section
-//                            Row(
-//                                modifier = Modifier.fillMaxWidth(),
-//                                horizontalArrangement = Arrangement.SpaceBetween
-//                            ) {
-//                                Column {
-//                                    Text(
-//                                        text = "Buy Price",
-//                                        fontSize = 12.sp,
-//                                        color = Color.Gray
-//                                    )
-//                                    Text(
-//                                        text = "50",
-//                                        fontSize = 16.sp,
-//                                        fontWeight = FontWeight.Bold,
-//                                        color = colorResource(id = R.color.bleu_de_france)
-//                                    )
-//                                }
-//                                Column {
-//                                    Text(
-//                                        text = "Sell Price",
-//                                        fontSize = 12.sp,
-//                                        color = Color.Gray
-//                                    )
-//                                    Text(
-//                                        text = "60",
-//                                        fontSize = 16.sp,
-//                                        fontWeight = FontWeight.Bold,
-//                                        color = colorResource(id = R.color.coral)
-//                                    )
-//                                }
-//                            }
-//
-//                            Spacer(modifier = Modifier.height(12.dp))
-//
-//                            // 🔹 Other details in a neat row format
-//                            Row(
-//                                modifier = Modifier.fillMaxWidth(),
-//                                horizontalArrangement = Arrangement.SpaceBetween
-//                            ) {
-//                                Column {
-//                                    Text(
-//                                        text = "Category",
-//                                        fontSize = 12.sp,
-//                                        color = Color.Gray
-//                                    )
-//                                    Text(
-//                                        text = "dairy products",
-//                                        fontSize = 14.sp,
-//                                        color = colorResource(id = R.color.coral)
-//                                    )
-//                                }
-//                                Column {
-//                                    Text(
-//                                        text = "Quantity",
-//                                        fontSize = 12.sp,
-//                                        color = Color.Gray
-//                                    )
-//                                    Text(
-//                                        text = "20",
-//                                        fontSize = 14.sp,
-//                                        color = colorResource(id = R.color.yellow_green)
-//                                    )
-//                                }
-//                                Column {
-//                                    Text(
-//                                        text = "Expected profit",
-//                                        fontSize = 12.sp,
-//                                        color = Color.Gray
-//                                    )
-//                                    Text(
-//                                        text = "200",
-//                                        fontSize = 14.sp,
-//                                        color = colorResource(id = R.color.avocado)
-//                                    )
-//                                }
-//                            }
-//
-//                            Spacer(modifier = Modifier.height(12.dp))
-//
-////                            // 🔹 Quantity at bottom center
-////                            Text(
-////                                text = "Quantity: ${productItem.productQuantity}",
-////                                fontSize = 20.sp,
-////                                fontWeight = FontWeight.Bold,
-////                                color = colorResource(id = R.color.prussian_blue),
-////                                modifier = Modifier.align(Alignment.End)
-////                            )
-//                        }
-//                    }
-//                }
-
                 // Search Field
                 TextField(
                     value = searchQuery.value,
                     onValueChange = { searchQuery.value = it },
-                    placeholder = { Text(text = "Search... by date") },
+                    placeholder = { Text(text = "Search...") },
                     leadingIcon = {
 
                         Icon(
@@ -310,37 +183,103 @@ fun InventoryScreen(navController: NavController) {
                     singleLine = true
                 )
 
+//                Column(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                ) {
+//
+//                    PaginationControls(
+//                        totalPages = totalPages,
+//                        currentPage = currentPage,
+//                        onPageChange = { newPage -> currentPage = newPage }
+//                    )
+////                    paginatedData.forEach { (date, items) ->
+////                        Text(
+////                            text = date,
+////                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+////                            fontSize = 18.sp,
+////                            fontWeight = FontWeight.Bold,
+////                            color = colorResource(id = R.color.white)
+////                        )
+////
+////                        items.forEach { stock ->
+////                            StockCard(stock)
+////                        }
+////                    }
+//
+//                    paginatedData.forEach { (date, items) ->
+//                        Text(
+//                            text = date,
+//                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+//                            fontSize = 18.sp,
+//                            fontWeight = FontWeight.Bold,
+//                            color = colorResource(id = R.color.white)
+//                        )
+//
+//                        items.forEach { stockEntity ->
+//                            StockCard(stockEntity)
+//                        }
+//                    }
+//
+//
+//
+//                }
+
+// 🔹 Filter stock updates based on search text
+                val filteredStock = stockUpdates.filter { stock ->
+                    val query = searchQuery.value.trim().lowercase()
+                    query.isEmpty() || stock.productName.lowercase().contains(query) || stock.productCode.lowercase().contains(query)
+                }
+
+                val groupedFilteredData = filteredStock.groupBy { it.date }
+                val filteredTotalPages = ceil(filteredStock.size / itemsPerPage.toFloat()).toInt().coerceAtLeast(1)
+                val paginatedFilteredData = filteredStock
+                    .drop((currentPage - 1) * itemsPerPage)
+                    .take(itemsPerPage)
+                    .groupBy { it.date }
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-//                        .verticalScroll(rememberScrollState())
-//                        .padding(8.dp)
                 ) {
 
-//                    Spacer(modifier = Modifier.height(16.dp))
-
                     PaginationControls(
-                        totalPages = totalPages,
+                        totalPages = filteredTotalPages,
                         currentPage = currentPage,
                         onPageChange = { newPage -> currentPage = newPage }
                     )
-                    paginatedData.forEach { (date, items) ->
-                        Text(
-                            text = date,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = colorResource(id = R.color.white)
-                        )
 
-                        items.forEach { stock ->
-                            StockCard(stock)
+                    if (filteredStock.isEmpty()) {
+                        // 🔹 Show message if no data found or list is empty
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 40.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "No data available",
+                                fontSize = 16.sp,
+                                color = colorResource(id = R.color.gray01)
+                            )
+                        }
+                    } else {
+                        // 🔹 Show filtered paginated data
+                        paginatedFilteredData.forEach { (date, items) ->
+                            Text(
+                                text = date,
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = colorResource(id = R.color.white)
+                            )
+
+                            items.forEach { stockEntity ->
+                                StockCard(stockEntity)
+                            }
                         }
                     }
-
-
                 }
-
 
 
             }
@@ -378,7 +317,7 @@ data class StockItem(
 
 
 @Composable
-fun StockCard(stock: StockItem) {
+fun StockCard(stock: StockEntity) {
     val expectedProfit = (stock.sellPrice - stock.buyPrice) * stock.quantity
 
     Card(
@@ -471,54 +410,6 @@ fun StockCard(stock: StockItem) {
         }
     }
 }
-
-//@Composable
-//fun PaginationControls(
-//    totalPages: Int,
-//    currentPage: Int,
-//    onPageChange: (Int) -> Unit
-//) {
-//    Row(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(8.dp),
-//        horizontalArrangement = Arrangement.Center,
-//        verticalAlignment = Alignment.CenterVertically
-//    ) {
-//        TextButton(
-//            onClick = { if (currentPage > 1) onPageChange(currentPage - 1) },
-//            enabled = currentPage > 1
-//        ) { Text("Prev") }
-//
-//        // show pagination numbers with dots
-//        val pagesToShow = when {
-//            totalPages <= 5 -> (1..totalPages).toList()
-//            currentPage <= 3 -> listOf(1, 2, 3, 4, -1, totalPages)
-//            currentPage >= totalPages - 2 -> listOf(1, -1, totalPages - 3, totalPages - 2, totalPages - 1, totalPages)
-//            else -> listOf(1, -1, currentPage - 1, currentPage, currentPage + 1, -1, totalPages)
-//        }
-//
-//        pagesToShow.forEach { page ->
-//            when (page) {
-//                -1 -> Text("...", modifier = Modifier.padding(horizontal = 4.dp))
-//                else -> TextButton(
-//                    onClick = { onPageChange(page) },
-//                    enabled = page != currentPage
-//                ) {
-//                    Text(
-//                        text = page.toString(),
-//                        color = if (page == currentPage) Color.Blue else Color.Black
-//                    )
-//                }
-//            }
-//        }
-//
-//        TextButton(
-//            onClick = { if (currentPage < totalPages) onPageChange(currentPage + 1) },
-//            enabled = currentPage < totalPages
-//        ) { Text("Next") }
-//    }
-//}
 
 
 @Composable

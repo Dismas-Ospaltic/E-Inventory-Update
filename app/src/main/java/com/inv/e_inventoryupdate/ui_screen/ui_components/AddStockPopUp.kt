@@ -627,6 +627,7 @@ fun AddStockPopUp(onDismiss: () -> Unit) {
     var productCode by remember { mutableStateOf("") }
     var productName by remember { mutableStateOf("") }
     var category by remember { mutableStateOf("") }
+    var notes by remember { mutableStateOf("") }
     var buyPrice by remember { mutableStateOf("") }
     var sellPrice by remember { mutableStateOf("") }
     var quantity by remember { mutableStateOf("") }
@@ -796,6 +797,13 @@ fun AddStockPopUp(onDismiss: () -> Unit) {
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
 
+                TextField(
+                    value = notes,
+                    onValueChange = { notes = it },
+                    label = { Text("Notes(optional)") },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true
+                )
                 Spacer(modifier = Modifier.height(12.dp))
 
                 // 🔹 Action Buttons
@@ -808,7 +816,60 @@ fun AddStockPopUp(onDismiss: () -> Unit) {
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(
-                        onClick = { onDismiss() },
+                        onClick = {
+
+
+                            when {
+                                title.isEmpty() -> {
+                                    Toast.makeText(context, "Please enter a title", Toast.LENGTH_LONG).show()
+                                    return@Button
+                                }
+
+                                watchlistPageNo.isEmpty() -> {
+                                    Toast.makeText(context, "Please enter Watchlist Page or Episode number", Toast.LENGTH_LONG).show()
+                                    return@Button
+                                }
+
+                                type.isEmpty() -> {
+                                    Toast.makeText(context, "Please select Watchlist Type", Toast.LENGTH_LONG).show()
+                                    return@Button
+                                }
+
+                                category.isEmpty() -> {
+                                    Toast.makeText(context, "Please select Watchlist Category", Toast.LENGTH_LONG).show()
+                                    return@Button
+                                }
+
+                                selectedDate.isEmpty() -> {
+                                    Toast.makeText(context, "Please select Expected Completion Date", Toast.LENGTH_LONG).show()
+                                    return@Button
+                                }
+
+                                else -> {
+                                    watchListViewModel.insertWatchlist(
+                                        WatchListEntity(
+                                            watchListTitle = title,
+                                            expectedCompleteDate = selectedDate,
+                                            link = link,
+                                            type = type,
+                                            notes = notes,
+                                            category = category,
+                                            noEpisodesPage = watchlistPageNo.toInt(),
+                                            watchlistId = generateSixDigitRandomNumber().toString()
+                                        )
+                                    )
+                                    navController.popBackStack()
+                                    Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+
+
+
+
+
+
+
+                            onDismiss() },
                         shape = RoundedCornerShape(10.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = primaryColor)
                     ) {

@@ -13,6 +13,7 @@ data class StockEntity(
     val supplierId: String,
     val stockId: String,
     val productName: String,
+    val category: String,
     val buyPrice: Float,
     val sellPrice: Float,
     val productCode: String,
