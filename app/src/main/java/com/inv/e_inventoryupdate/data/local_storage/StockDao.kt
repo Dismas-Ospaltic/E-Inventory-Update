@@ -19,29 +19,43 @@ interface StockDao {
     @Update
     suspend fun updateStock(stock: StockEntity)
 
+
     @Query("SELECT * FROM stock_update ORDER BY timestamp DESC")
-    fun getAllItems(): Flow<List<StockEntity>>
+    fun getAllInvUpdate(): Flow<List<StockEntity>>
 
     @Query("SELECT * FROM stock_update")
-    suspend fun getAllItemsOnce(): List<StockEntity>  // One-time fetch for ViewModel check
+    suspend fun getAllInvUpdateOnce(): List<StockEntity>  // One-time fetch for ViewModel check
 
 
-    // 🔹 Delete an item by its unique itemId
-    @Query("DELETE FROM stock_update WHERE itemId = :itemId")
-    suspend fun deleteItemById(itemId: String): Int
+    // 🔹 Delete an update by its unique stockId
+    @Query("DELETE FROM stock_update WHERE stockId = :stockId")
+    suspend fun deleteInvUpdateById(stockId: String): Int
 
 
-//    // 🔹 Count expired products (expiry date before today)
-//    @Query("SELECT COUNT(*) FROM items WHERE expiryDate < :today")
-//    suspend fun getExpiredProductsCount(today: String): Int
-//
-//    // 🔹 Count unexpired products (expiry date today or later)
-//    @Query("SELECT COUNT(*) FROM items WHERE expiryDate >= :today")
-//    suspend fun getUnexpiredProductsCount(today: String): Int
-//
-////    @Query("UPDATE items SET notified = 1 WHERE itemId = :itemId")
-////    suspend fun markAsNotified(itemId: String)
-//
-//    @Query("SELECT * FROM items WHERE itemId = :itemId")
-//    suspend fun getItemById(itemId: String): ItemEntity?
+    @Query("""
+        UPDATE stock_update 
+        SET status= :newStatus
+        WHERE stockId = :stockId
+    """)
+    suspend fun updateStockStatusById(
+        newStatus: String,
+        stockId: String
+    ): Int?
+
+
+
+    @Query("""
+        UPDATE stock_update 
+        SET quantity= :newQty
+        WHERE stockId = :stockId
+    """)
+    suspend fun updateStockQtyById(
+        newQty: Float,
+        stockId: String
+    ): Int?
+
+    // 🔹 Count expired products (expiry date before today)
+    @Query("SELECT COUNT(*) FROM stock_update")
+    suspend fun getAllInvUpdateCount(today: String): Int
+
 }

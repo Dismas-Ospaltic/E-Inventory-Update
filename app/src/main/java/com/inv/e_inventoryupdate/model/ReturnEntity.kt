@@ -10,14 +10,9 @@ import com.inv.e_inventoryupdate.utils.standardDateFormat
 data class ReturnEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val date: String = standardDateFormat(System.currentTimeMillis()), //DD-MM-YYYY
-    val supplierId: String,
+    val returnId: String,
     val stockId: String,
-    val productName: String,
-    val buyPrice: Float,
-    val sellPrice: Float,
-    val productCode: String,
-    val quantity: Int,
-    val status: String = "inward",
-    val notes: String? = null,
+    val returnQuantity: Int,
+    val reason: String,
     val timestamp: Long = System.currentTimeMillis()
 )

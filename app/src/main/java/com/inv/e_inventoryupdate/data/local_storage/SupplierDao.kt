@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.inv.e_inventoryupdate.model.StockEntity
 import com.inv.e_inventoryupdate.model.SupplierEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -26,29 +25,20 @@ interface SupplierDao {
     suspend fun getAllSuppliersOnce(): List<SupplierEntity>  // One-time fetch for ViewModel check
 
 
-
     @Query("""
-        UPDATE items 
-        SET itemName = :itemName, 
-            itemPhoto = :itemPhoto, 
-            itemCode = :itemCode,
-            itemCategory = :itemCategory, 
-            itemDescription = :itemDescription,
-            itemQuantity = :itemQuantity, 
-            manufactureDate = :manufactureDate,
-            expiryDate = :expiryDate  
-        WHERE itemId = :itemId
+        UPDATE suppliers 
+        SET supplierName = :supplierName, 
+            supplierPhone = :supplierPhone, 
+            supplierEmail = :supplierEmail,
+            supplierAddress = :supplierAddress
+        WHERE supplierId = :supplierId
     """)
     suspend fun updateSupplierById(
-        itemName: String,
-        itemPhoto: String,
-        itemCode: String,
-        itemCategory: String,
-        itemDescription: String,
-        itemQuantity: Int,
-        manufactureDate: String,
-        expiryDate: String,
-        itemId: String
+        supplierName: String,
+        supplierPhone: String,
+        supplierEmail: String,
+        supplierAddress: String,
+        supplierId: String
     ): Int?
 
     // 🔹 Delete an item by its unique supplierId
@@ -56,17 +46,28 @@ interface SupplierDao {
     suspend fun deleteSupplierById(supplierId: String): Int
 
 
-//    // 🔹 Count expired products (expiry date before today)
-//    @Query("SELECT COUNT(*) FROM items WHERE expiryDate < :today")
-//    suspend fun getExpiredProductsCount(today: String): Int
-//
-//    // 🔹 Count unexpired products (expiry date today or later)
-//    @Query("SELECT COUNT(*) FROM items WHERE expiryDate >= :today")
-//    suspend fun getUnexpiredProductsCount(today: String): Int
-//
-////    @Query("UPDATE items SET notified = 1 WHERE itemId = :itemId")
-////    suspend fun markAsNotified(itemId: String)
-//
-//    @Query("SELECT * FROM items WHERE itemId = :itemId")
-//    suspend fun getItemById(itemId: String): ItemEntity?
+    @Query("""
+        UPDATE suppliers 
+        SET status= :newStatus
+        WHERE supplierId = :supplierId
+    """)
+    suspend fun updateSupplierStatusById(
+        newStatus: String,
+        supplierId: String
+    ): Int?
+
+    // 🔹 Count no of suppliers
+    @Query("SELECT COUNT(*) FROM suppliers")
+    suspend fun getAllSuppliersCount(): Int
+
+
+    // 🔹 Count no of active suppliers
+    @Query("SELECT COUNT(*) FROM suppliers WHERE status ='active'")
+    suspend fun getActiveSupplierCount(): Int
+
+    // 🔹 Count no of dormant suppliers
+    @Query("SELECT COUNT(*) FROM suppliers WHERE status ='dormant'")
+    suspend fun getDormantSupplierCount(): Int
+
+
 }
