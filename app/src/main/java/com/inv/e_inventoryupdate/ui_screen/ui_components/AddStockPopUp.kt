@@ -595,6 +595,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.inv.e_inventoryupdate.R
+import com.inv.e_inventoryupdate.model.SupplierEntity
+import com.inv.e_inventoryupdate.viewmodel.SupplierViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -602,16 +605,24 @@ fun AddStockPopUp(onDismiss: () -> Unit) {
     val primaryColor = colorResource(id = R.color.teal_700)
     val accentColor = colorResource(id = R.color.coral)
 
-    val suppliers = listOf(
-        Supplier("SUP001", "Fresh Dairy Ltd", "Dairy"),
-        Supplier("SUP002", "Golden Snacks", "Snacks"),
-        Supplier("SUP003", "Healthy Foods Co.", "Groceries"),
-        Supplier("SUP004", "Milano Supplies", "Drinks"),
-        Supplier("SUP005", "Sunrise Traders", "Stationery")
-    )
+
+
+
+    val supplierViewModel: SupplierViewModel = koinViewModel()
+    val supplierList by supplierViewModel.suppliers.collectAsState(initial = emptyList())
+
+    val suppliers = supplierList // this comes from your ViewModel
+//    val suppliers = listOf(
+//        Supplier("SUP001", "Fresh Dairy Ltd", "Dairy"),
+//        Supplier("SUP002", "Golden Snacks", "Snacks"),
+//        Supplier("SUP003", "Healthy Foods Co.", "Groceries"),
+//        Supplier("SUP004", "Milano Supplies", "Drinks"),
+//        Supplier("SUP005", "Sunrise Traders", "Stationery")
+//    )
 
     var supplierSearch by remember { mutableStateOf("") }
-    var selectedSupplier by remember { mutableStateOf<Supplier?>(null) }
+//    var selectedSupplier by remember { mutableStateOf<Supplier?>(null) }
+    var selectedSupplier by remember { mutableStateOf<SupplierEntity?>(null) }
 
     var productCode by remember { mutableStateOf("") }
     var productName by remember { mutableStateOf("") }
@@ -674,10 +685,16 @@ fun AddStockPopUp(onDismiss: () -> Unit) {
                         }
                     )
 
+//                    val filteredSuppliers = suppliers.filter {
+//                        it.id.contains(supplierSearch, ignoreCase = true) ||
+//                                it.name.contains(supplierSearch, ignoreCase = true)
+//                    }
+
                     val filteredSuppliers = suppliers.filter {
-                        it.id.contains(supplierSearch, ignoreCase = true) ||
-                                it.name.contains(supplierSearch, ignoreCase = true)
+                        it.supplierId.contains(supplierSearch, ignoreCase = true) ||
+                                it.supplierName.contains(supplierSearch, ignoreCase = true)
                     }
+
 
                     ExposedDropdownMenu(
                         expanded = expanded && supplierSearch.isNotEmpty(),
@@ -691,12 +708,18 @@ fun AddStockPopUp(onDismiss: () -> Unit) {
                         } else {
                             filteredSuppliers.forEach { supplier ->
                                 DropdownMenuItem(
-                                    text = { Text("${supplier.id} - ${supplier.name}") },
+                                    text = { Text("${supplier.id} - ${supplier.supplierName}") },
+//                                    onClick = {
+//                                        supplierSearch = supplier.id
+//                                        selectedSupplier = supplier
+//                                        expanded = false
+//                                    }
                                     onClick = {
-                                        supplierSearch = supplier.id
+                                        supplierSearch = supplier.supplierId
                                         selectedSupplier = supplier
                                         expanded = false
                                     }
+
                                 )
                             }
                         }
@@ -705,7 +728,7 @@ fun AddStockPopUp(onDismiss: () -> Unit) {
 
                 selectedSupplier?.let {
                     Text(
-                        text = "Selected Supplier: ${it.name} (${it.category})",
+                        text = "Selected Supplier: ${it.supplierName} (${it.supplierPhone})",
                         color = primaryColor,
                         fontWeight = FontWeight.Medium,
                         fontSize = 14.sp

@@ -56,6 +56,6 @@ interface StockDao {
 
     // 🔹 Count expired products (expiry date before today)
     @Query("SELECT COUNT(*) FROM stock_update")
-    suspend fun getAllInvUpdateCount(today: String): Int
+    suspend fun getAllInvUpdateCount(): Int
 
 }

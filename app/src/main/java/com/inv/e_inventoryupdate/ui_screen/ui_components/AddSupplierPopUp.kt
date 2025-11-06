@@ -33,6 +33,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +48,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.inv.e_inventoryupdate.R
+import com.inv.e_inventoryupdate.model.SupplierEntity
+import com.inv.e_inventoryupdate.viewmodel.SupplierViewModel
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -189,6 +192,12 @@ fun AddSupplierPopUp(
     var nameError by remember { mutableStateOf(false) }
     var phoneError by remember { mutableStateOf(false) }
 
+
+    //    val items by itemViewModel.items.collectAsState()
+    val supplierViewModel: SupplierViewModel = koinViewModel()
+    val suppliers by supplierViewModel.suppliers.collectAsState(initial = emptyList())
+
+
     Dialog(onDismissRequest = onDismiss) {
         Surface(
             shape = RoundedCornerShape(16.dp),
@@ -302,6 +311,15 @@ fun AddSupplierPopUp(
 
                             if (!codeError && !nameError && !phoneError) {
                                 // Save supplier here
+
+
+                                supplierViewModel.insertSupplier(SupplierEntity(
+                                    supplierId = supplierCode,
+                                    supplierName = supplierName,
+                                    supplierPhone = supplierPhone,
+                                    supplierEmail = supplierEmail,
+                                    supplierAddress = supplierAddress
+                                ))
                                 onDismiss()
                             }
                         },

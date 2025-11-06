@@ -14,7 +14,9 @@ import androidx.room.RoomDatabase
 @Database(entities = [StockEntity::class, SupplierEntity::class, ReturnEntity::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun itemDao(): ItemDao
+    abstract fun stockDao(): StockDao
+    abstract fun returnDao(): ReturnDao
+    abstract fun supplierDao(): SupplierDao
 
     companion object {
         @Volatile

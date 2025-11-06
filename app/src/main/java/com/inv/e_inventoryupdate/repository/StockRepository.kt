@@ -38,7 +38,7 @@ class StockRepository(private val stockDao: StockDao) {
 
     // 🔹 Count all inventory updates
     suspend fun getAllStockUpdateCount(): Int {
-        val today = "" // You can pass an empty string since query doesn’t use 'today'
-        return stockDao.getAllInvUpdateCount(today)
+//        val today = "" // You can pass an empty string since query doesn’t use 'today'
+        return stockDao.getAllInvUpdateCount()
     }
 }
