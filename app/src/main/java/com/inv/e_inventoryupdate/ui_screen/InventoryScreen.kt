@@ -338,6 +338,12 @@ fun StockCard(stock: StockEntity) {
             ) {
                 Column {
                     Text(
+                        text = "Stock Id: ${stock.stockId}",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = colorResource(id = R.color.gray01)
+                    )
+                    Text(
                         text = "Product Code: ${stock.productCode}",
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Medium,

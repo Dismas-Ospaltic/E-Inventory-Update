@@ -102,7 +102,7 @@ fun SupplierScreen(navController: NavController) {
                     TextField(
                         value = searchQuery,
                         onValueChange = { searchQuery = it },
-                        placeholder = { Text(text = "Search... by date") },
+                        placeholder = { Text(text = "Search...") },
                         leadingIcon = {
 
                             Icon(

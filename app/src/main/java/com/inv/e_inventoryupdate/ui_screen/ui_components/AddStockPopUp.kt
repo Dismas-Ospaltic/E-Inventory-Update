@@ -576,6 +576,7 @@
 
 package com.inv.e_inventoryupdate.ui_screen.ui_components
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -595,7 +596,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.inv.e_inventoryupdate.R
+import com.inv.e_inventoryupdate.model.StockEntity
 import com.inv.e_inventoryupdate.model.SupplierEntity
+import com.inv.e_inventoryupdate.viewmodel.StockViewModel
 import com.inv.e_inventoryupdate.viewmodel.SupplierViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -610,6 +613,9 @@ fun AddStockPopUp(onDismiss: () -> Unit) {
 
     val supplierViewModel: SupplierViewModel = koinViewModel()
     val supplierList by supplierViewModel.suppliers.collectAsState(initial = emptyList())
+    val stockViewmodel: StockViewModel = koinViewModel()
+    val stockUpdates by stockViewmodel.stockList.collectAsState(initial = emptyList())
+
 
     val suppliers = supplierList // this comes from your ViewModel
 //    val suppliers = listOf(
@@ -633,6 +639,8 @@ fun AddStockPopUp(onDismiss: () -> Unit) {
     var quantity by remember { mutableStateOf("") }
 
     var expanded by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
 
     Dialog(onDismissRequest = onDismiss) {
         Surface(
@@ -820,45 +828,79 @@ fun AddStockPopUp(onDismiss: () -> Unit) {
 
 
                             when {
-                                title.isEmpty() -> {
-                                    Toast.makeText(context, "Please enter a title", Toast.LENGTH_LONG).show()
+
+//                                selectedSupplier!!.supplierId.isNullOrEmpty() ->{
+//                                    Toast.makeText(context, "Please select supplier", Toast.LENGTH_LONG).show()
+//                                    return@Button
+//                                }
+
+
+                                selectedSupplier == null || selectedSupplier?.supplierId.isNullOrEmpty() -> {
+                                    Toast.makeText(
+                                        context,
+                                        "Please select a supplier",
+                                        Toast.LENGTH_LONG
+                                    ).show()
                                     return@Button
                                 }
 
-                                watchlistPageNo.isEmpty() -> {
-                                    Toast.makeText(context, "Please enter Watchlist Page or Episode number", Toast.LENGTH_LONG).show()
+                                productCode.isEmpty() -> {
+                                    Toast.makeText(context, "Please enter product barcode/code", Toast.LENGTH_LONG).show()
                                     return@Button
                                 }
 
-                                type.isEmpty() -> {
-                                    Toast.makeText(context, "Please select Watchlist Type", Toast.LENGTH_LONG).show()
+                                productName.isEmpty() -> {
+                                    Toast.makeText(context, "Please enter product name", Toast.LENGTH_LONG).show()
                                     return@Button
                                 }
 
-                                category.isEmpty() -> {
-                                    Toast.makeText(context, "Please select Watchlist Category", Toast.LENGTH_LONG).show()
+                                sellPrice.isEmpty() -> {
+                                    Toast.makeText(context, "Please enter product sell price", Toast.LENGTH_LONG).show()
                                     return@Button
                                 }
 
-                                selectedDate.isEmpty() -> {
-                                    Toast.makeText(context, "Please select Expected Completion Date", Toast.LENGTH_LONG).show()
+                                buyPrice.isEmpty() -> {
+                                    Toast.makeText(context, "Please enter product buy price", Toast.LENGTH_LONG).show()
                                     return@Button
                                 }
+
+                                quantity.isEmpty() -> {
+                                    Toast.makeText(context, "Please enter quantity", Toast.LENGTH_LONG).show()
+                                    return@Button
+                                }
+
+
 
                                 else -> {
-                                    watchListViewModel.insertWatchlist(
-                                        WatchListEntity(
-                                            watchListTitle = title,
-                                            expectedCompleteDate = selectedDate,
-                                            link = link,
-                                            type = type,
-                                            notes = notes,
+//                                    watchListViewModel.insertWatchlist(
+//                                        WatchListEntity(
+//                                            watchListTitle = title,
+//                                            expectedCompleteDate = selectedDate,
+//                                            link = link,
+//                                            type = type,
+//                                            notes = notes,
+//                                            category = category,
+//                                            noEpisodesPage = watchlistPageNo.toInt(),
+//                                            watchlistId = generateSixDigitRandomNumber().toString()
+//                                        )
+//                                    )
+                                    stockViewmodel.insertStock(
+                                        StockEntity(
+//                                            supplierId = selectedSupplier!!.supplierId ,
+                                            supplierId = selectedSupplier?.supplierId ?: "",
+                                            stockId = generateTimestampBased10DigitNumberForStock().toString(),
+                                            productName = productName,
                                             category = category,
-                                            noEpisodesPage = watchlistPageNo.toInt(),
-                                            watchlistId = generateSixDigitRandomNumber().toString()
+                                            buyPrice = buyPrice.toFloat(),
+                                            sellPrice = sellPrice.toFloat(),
+                                            productCode = productCode,
+                                            quantity = quantity.toInt(),
+                                            notes = notes
                                         )
                                     )
-                                    navController.popBackStack()
+
+
+                                    onDismiss()
                                     Toast.makeText(context, "Saved", Toast.LENGTH_SHORT).show()
                                 }
                             }
@@ -869,7 +911,7 @@ fun AddStockPopUp(onDismiss: () -> Unit) {
 
 
 
-                            onDismiss() },
+                             },
                         shape = RoundedCornerShape(10.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = primaryColor)
                     ) {
@@ -886,4 +928,11 @@ data class Supplier(
     val name: String,
     val category: String
 )
+
+
+fun generateTimestampBased10DigitNumberForStock(): Long {
+    val timestampPart = (System.currentTimeMillis() / 1000) % 100000
+    val randomPart = (10000..99999).random()
+    return "$timestampPart$randomPart".toLong()
+}
 
