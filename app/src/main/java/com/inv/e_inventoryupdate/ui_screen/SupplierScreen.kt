@@ -155,6 +155,7 @@ fun SupplierScreen(navController: NavController) {
                    }
                }else{
                    for (index in filteredSuppliers.indices) {
+
                        val supplier = filteredSuppliers[index]
 
                            Card(

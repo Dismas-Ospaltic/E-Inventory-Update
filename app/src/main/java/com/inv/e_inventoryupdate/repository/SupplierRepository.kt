@@ -47,6 +47,11 @@ class SupplierRepository(private val supplierDao: SupplierDao) {
     suspend fun getActiveSupplierCount(): Int = supplierDao.getActiveSupplierCount()
 
     suspend fun getDormantSupplierCount(): Int = supplierDao.getDormantSupplierCount()
+
+    // ✅ Get a single supplier by ID
+    suspend fun getSupplierById(supplierId: String): SupplierEntity? {
+        return supplierDao.getSupplierById(supplierId)
+    }
 }
 
 

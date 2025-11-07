@@ -72,7 +72,7 @@ fun InvActionPop(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showReturnDialog by remember { mutableStateOf(false) }
     var showReturnActionDialog by remember { mutableStateOf(false)}
-    var showSupplierDialog by remember { mutableStateOf(false) }
+    var showSupplierDetDialog by remember { mutableStateOf(false) }
 
     val supplierViewModel: SupplierViewModel = koinViewModel()
     val supplierList by supplierViewModel.suppliers.collectAsState(initial = emptyList())
@@ -107,7 +107,7 @@ fun InvActionPop(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-                            showSupplierDialog = true
+                            showSupplierDetDialog = true
                         }
                         .padding(12.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -248,6 +248,15 @@ fun InvActionPop(
             onDismiss = {  showReturnActionDialog = false ;
                 onDismiss()},
             stockId = stockId
+        )
+
+    }
+
+    if (showSupplierDetDialog) {
+        SupplierDetailPop(
+            onDismiss = {  showSupplierDetDialog = false ;
+                onDismiss()},
+            supplierId = supplierId
         )
 
     }

@@ -56,4 +56,15 @@ class SupplierViewModel(private val supplierRepository: SupplierRepository) : Vi
             _dormantCount.value = supplierRepository.getDormantSupplierCount()
         }
     }
+
+    private val _supplierDetails = MutableStateFlow<SupplierEntity?>(null)
+    val supplierDetails: StateFlow<SupplierEntity?> = _supplierDetails
+
+    // ✅ Function to fetch supplier details by ID
+    fun fetchSupplierById(supplierId: String) {
+        viewModelScope.launch {
+            val supplier = supplierRepository.getSupplierById(supplierId)
+            _supplierDetails.value = supplier
+        }
+    }
 }

@@ -69,5 +69,8 @@ interface SupplierDao {
     @Query("SELECT COUNT(*) FROM suppliers WHERE status ='dormant'")
     suspend fun getDormantSupplierCount(): Int
 
+    // ✅ Get single supplier details by ID
+    @Query("SELECT * FROM suppliers WHERE supplierId = :supplierId LIMIT 1")
+    suspend fun getSupplierById(supplierId: String): SupplierEntity?
 
 }
