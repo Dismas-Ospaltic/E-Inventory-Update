@@ -26,6 +26,7 @@ import com.inv.e_inventoryupdate.model.StockEntity
 import com.inv.e_inventoryupdate.repository.StockRepository
 import com.inv.e_inventoryupdate.ui_screen.ui_components.AddStockPopUp
 import com.inv.e_inventoryupdate.ui_screen.ui_components.AppStatusBarDynamicColor
+import com.inv.e_inventoryupdate.ui_screen.ui_components.InvActionPop
 import com.inv.e_inventoryupdate.viewmodel.StockViewModel
 import com.inv.e_inventoryupdate.viewmodel.SupplierViewModel
 import compose.icons.FontAwesomeIcons
@@ -51,6 +52,8 @@ fun InventoryScreen(navController: NavController) {
     val supplierViewModel: SupplierViewModel = koinViewModel()
     val suppliers by supplierViewModel.suppliers.collectAsState(initial = emptyList())
     val stockUpdates by stockViewmodel.stockList.collectAsState(initial = emptyList())
+
+
 
 
 //    // 🔹 Step 1: Mock Data
@@ -275,7 +278,7 @@ fun InventoryScreen(navController: NavController) {
                             )
 
                             items.forEach { stockEntity ->
-                                StockCard(stockEntity)
+                                StockCard(stockEntity, navController)
                             }
                         }
                     }
@@ -317,19 +320,175 @@ data class StockItem(
 
 
 @Composable
-fun StockCard(stock: StockEntity) {
+fun StockCard(stock: StockEntity, navController: NavController) {
+
+    var selectedStockId by remember { mutableStateOf<String?>(null) }
+    var selectedISupplierId by remember { mutableStateOf<String?>(null) }
+    var selectedIDate by remember { mutableStateOf<String?>(null) }
+    var selectedIStatus by remember { mutableStateOf<String?>(null) }
+    var showActionDialog by remember { mutableStateOf(false) }
+
     val expectedProfit = (stock.sellPrice - stock.buyPrice) * stock.quantity
+
+//    Card(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .padding(horizontal = 4.dp, vertical = 2.dp)
+//            .clickable {},
+//        shape = RoundedCornerShape(8.dp),
+//        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+//        colors = CardDefaults.cardColors(containerColor = Color.White)
+//    ) {
+//        Column(modifier = Modifier.padding(16.dp)) {
+//
+//            Box(
+//                modifier = Modifier
+//                    .clip(RoundedCornerShape(20.dp))
+//                    .background(colorResource(id=R.color.yellow_green))
+//                    .padding(horizontal = 10.dp, vertical = 4.dp)
+//                    .align(Alignment.End)
+//            ) {
+//                Text(
+//                    text = "status: ${stock.status}",
+//                    fontSize = 12.sp,
+//                    color = Color.White,
+//                    fontWeight = FontWeight.Medium
+//                )
+//            }
+//
+//            Row(
+//                modifier = Modifier.fillMaxWidth(),
+//                horizontalArrangement = Arrangement.SpaceBetween,
+//                verticalAlignment = Alignment.CenterVertically
+//            ) {
+//                Column {
+//                    Text(
+//                        text = "Stock Id: ${stock.stockId}",
+//                        fontSize = 13.sp,
+//                        fontWeight = FontWeight.Medium,
+//                        color = colorResource(id = R.color.gray01)
+//                    )
+//                    Text(
+//                        text = "Product Code: ${stock.productCode}",
+//                        fontSize = 13.sp,
+//                        fontWeight = FontWeight.Medium,
+//                        color = colorResource(id = R.color.gray01)
+//                    )
+//                    Spacer(modifier = Modifier.height(4.dp))
+//                    Text(
+//                        text = stock.productName,
+//                        fontSize = 18.sp,
+//                        fontWeight = FontWeight.SemiBold,
+//                        color = colorResource(id = R.color.coral)
+//                    )
+//                }
+//            }
+//
+//            Spacer(modifier = Modifier.height(12.dp))
+//
+//            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+//                Column {
+//                    Text("Buy Price", fontSize = 12.sp, color = Color.Gray)
+//                    Text(
+//                        text = stock.buyPrice.toString(),
+//                        fontSize = 16.sp,
+//                        fontWeight = FontWeight.Bold,
+//                        color = colorResource(id = R.color.bleu_de_france)
+//                    )
+//                }
+//                Column {
+//                    Text("Sell Price", fontSize = 12.sp, color = Color.Gray)
+//                    Text(
+//                        text = stock.sellPrice.toString(),
+//                        fontSize = 16.sp,
+//                        fontWeight = FontWeight.Bold,
+//                        color = colorResource(id = R.color.coral)
+//                    )
+//                }
+//            }
+//
+//            Spacer(modifier = Modifier.height(12.dp))
+//
+//            Row(
+//                modifier = Modifier.fillMaxWidth(),
+//                horizontalArrangement = Arrangement.SpaceBetween
+//            ) {
+//                Column {
+//                    Text("Category", fontSize = 12.sp, color = Color.Gray)
+//                    Text(
+//                        text = stock.category,
+//                        fontSize = 14.sp,
+//                        color = colorResource(id = R.color.coral)
+//                    )
+//                }
+//                Column {
+//                    Text("Quantity", fontSize = 12.sp, color = Color.Gray)
+//                    Text(
+//                        text = stock.quantity.toString(),
+//                        fontSize = 14.sp,
+//                        color = colorResource(id = R.color.yellow_green)
+//                    )
+//                }
+//                Column {
+//                    Text("Expected Profit", fontSize = 12.sp, color = Color.Gray)
+//                    Text(
+//                        text = expectedProfit.toString(),
+//                        fontSize = 14.sp,
+//                        color = colorResource(id = R.color.avocado)
+//                    )
+//                }
+//            }
+//            Spacer(modifier = Modifier.height(12.dp))
+//            if(stock.notes?.isEmpty() ?: ){
+//                Text(
+//                    text = "Notes: ${stock.stockId}",
+//                    fontSize = 13.sp,
+//                    fontWeight = FontWeight.Medium,
+//                    color = colorResource(id = R.color.gray01)
+//                )
+//            }
+//
+//        }
+//    }
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 4.dp, vertical = 2.dp)
-            .clickable {},
+            .clickable {
+                selectedStockId = stock.stockId
+                 selectedISupplierId =stock.supplierId
+                selectedIDate =stock.date
+                selectedIStatus=stock.status
+                showActionDialog=true
+            },
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
+
+            // ✅ Status color based on type
+            val statusColor = when (stock.status.lowercase()) {
+                "inward" -> colorResource(id = R.color.yellow_green)
+                "return" -> colorResource(id = R.color.coral)
+                else -> colorResource(id = R.color.gray01)
+            }
+
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(statusColor)
+                    .padding(horizontal = 10.dp, vertical = 4.dp)
+                    .align(Alignment.End)
+            ) {
+                Text(
+                    text = "Status: ${stock.status}",
+                    fontSize = 12.sp,
+                    color = Color.White,
+                    fontWeight = FontWeight.Medium
+                )
+            }
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -413,8 +572,35 @@ fun StockCard(stock: StockEntity) {
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // ✅ Show notes only if not null or empty
+            if (!stock.notes.isNullOrEmpty()) {
+                Text(
+                    text = "Notes: ${stock.notes}",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = colorResource(id = R.color.gray01)
+                )
+            }
         }
     }
+
+
+
+    if (showActionDialog) {
+        InvActionPop(
+            navController,
+            onDismiss = {  showActionDialog = false },
+            stockId = selectedStockId.toString(),
+             supplierId = selectedISupplierId.toString(),
+             date= selectedIDate.toString(),
+            status = selectedIStatus.toString()
+        )
+
+    }
+
 }
 
 
