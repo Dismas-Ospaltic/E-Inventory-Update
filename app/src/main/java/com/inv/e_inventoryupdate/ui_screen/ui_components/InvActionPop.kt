@@ -164,23 +164,6 @@ fun InvActionPop(
           Text(text = "Delete update", fontSize = 16.sp)
       }
   }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-
-                        }
-                        .padding(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = FontAwesomeIcons.Regular.Edit,
-                        contentDescription = "Edit Update",
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(text = "Edit Update", fontSize = 16.sp)
-                }
 
             }
         }
@@ -214,33 +197,6 @@ fun InvActionPop(
     }
 
 
-//    if (showReturnDialog) {
-//        AlertDialog(
-//            onDismissRequest = { showReturnDialog = false },
-//            title = { Text("Return Stock") },
-//            text = { Text("Do you want to return this stock to supplier?") },
-//            confirmButton = {
-//                TextButton(onClick = {
-//
-//                    showReturnActionDialog = true
-//
-////                    Toast.makeText(context, "stock returned", Toast.LENGTH_SHORT).show()
-//                    showReturnDialog = false
-//                    onDismiss()
-//                }) {
-//                    Text("Return", color = colorResource(id = R.color.coral))
-//                }
-//            },
-//            dismissButton = {
-//                TextButton(onClick = {
-//                    showReturnDialog = false
-//                    onDismiss()
-//                }) {
-//                    Text("Cancel", color = colorResource(id = R.color.gray01))
-//                }
-//            }
-//        )
-//    }
 
 
     if (showReturnActionDialog) {

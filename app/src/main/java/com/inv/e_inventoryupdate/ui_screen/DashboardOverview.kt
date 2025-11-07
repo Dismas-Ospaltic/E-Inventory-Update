@@ -21,6 +21,8 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.sp
 import com.inv.e_inventoryupdate.R
 import com.inv.e_inventoryupdate.ui_screen.ui_components.AppStatusBarDynamicColor
+import com.inv.e_inventoryupdate.viewmodel.StockViewModel
+import com.inv.e_inventoryupdate.viewmodel.SupplierViewModel
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.ClipboardList
@@ -30,6 +32,7 @@ import compose.icons.fontawesomeicons.solid.TruckLoading
 import compose.icons.fontawesomeicons.solid.TruckPickup
 import compose.icons.fontawesomeicons.solid.Users
 import org.koin.androidx.compose.koinViewModel
+import java.time.YearMonth
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,6 +40,18 @@ import org.koin.androidx.compose.koinViewModel
 fun DashboardOverview(navController: NavController) {
     val backgroundColor = colorResource(id = R.color.baby_powder)
     AppStatusBarDynamicColor(backgroundColor)
+    val stockViewmodel: StockViewModel = koinViewModel()
+    val supplierViewModel: SupplierViewModel = koinViewModel()
+    val suppliers by supplierViewModel.suppliers.collectAsState(initial = emptyList())
+    val stockUpdates by stockViewmodel.stockList.collectAsState(initial = emptyList())
+    val totalNoOfUpdatesThisMonth by stockViewmodel.totalNoOfUpdatesThisMonth.collectAsState()
+    val stockCount by stockViewmodel.stockCount.collectAsState()
+    val activeSupplier by supplierViewModel.activeCount.collectAsState()
+    val currentYearMonth = remember{ YearMonth.now().toString()} // "2025-05"
+
+    LaunchedEffect(Unit) {
+       stockViewmodel.getAllInvUpdateCountMonthly(currentYearMonth)
+    }
 
 
     Scaffold(
@@ -92,14 +107,31 @@ fun DashboardOverview(navController: NavController) {
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     OverviewCard(
-                        title = "Inventory Updates",
-                        value = "12",
+                        title = "No. of Inventory Updates",
+                        value = stockCount.toString(),
                         icon = FontAwesomeIcons.Solid.TruckPickup,
                         backgroundColor = Color(0xFF4CAF50) // Green
                     )
 
+
                     OverviewCard(
-                        title = "Returned Stock",
+                        title = "No. of Inventory Updates This Month",
+                        value =  totalNoOfUpdatesThisMonth.toString(),
+                        icon = FontAwesomeIcons.Solid.TruckPickup,
+                        backgroundColor = Color(0xFF4CAF50) // Green
+                    )
+
+
+                    OverviewCard(
+                        title = "No. of Returned Stock",
+                        value = "3",
+                        icon = FontAwesomeIcons.Solid.TruckLoading,
+                        backgroundColor = Color(0xFFFFA000) // Amber
+                    )
+
+
+                    OverviewCard(
+                        title = "No. of Returned Stock this Month",
                         value = "3",
                         icon = FontAwesomeIcons.Solid.TruckLoading,
                         backgroundColor = Color(0xFFFFA000) // Amber
@@ -107,7 +139,7 @@ fun DashboardOverview(navController: NavController) {
 
                     OverviewCard(
                         title = "Suppliers",
-                        value = "5",
+                        value = activeSupplier.toString(),
                         icon = FontAwesomeIcons.Solid.Users,
                         backgroundColor = Color(0xFF2196F3) // Blue
                     )

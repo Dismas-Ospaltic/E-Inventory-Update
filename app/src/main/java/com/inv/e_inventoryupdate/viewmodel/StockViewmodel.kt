@@ -74,4 +74,17 @@ class StockViewModel(private val stockRepository: StockRepository) : ViewModel()
             _stockCount.value = stockRepository.getAllStockUpdateCount()
         }
     }
+
+
+    private val _totalNoOfUpdateThisMonth = MutableStateFlow(0)
+    val totalNoOfUpdatesThisMonth : StateFlow<Int> = _totalNoOfUpdateThisMonth
+
+    fun getAllInvUpdateCountMonthly(currentYearMonth : String) {
+        viewModelScope.launch {
+            stockRepository.getAllInvUpdateCountMonthly(currentYearMonth).collectLatest { total ->
+                _totalNoOfUpdateThisMonth.value = total
+            }
+        }
+    }
+
 }

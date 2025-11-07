@@ -58,4 +58,13 @@ interface StockDao {
     @Query("SELECT COUNT(*) FROM stock_update")
     suspend fun getAllInvUpdateCount(): Int
 
+    @Query("SELECT COUNT(*) FROM stock_update WHERE status = 'return'")
+    suspend fun getAllReturnedInvUpdateCount(): Int
+
+    @Query("SELECT COUNT(*) FROM stock_update WHERE date LIKE :month || '%' AND status = 'return'")
+    fun getAllReturnedInvUpdateCountMonthly(month: String): Flow<Int?>
+
+    @Query("SELECT COUNT(*) FROM stock_update WHERE date LIKE :month || '%'")
+    fun getAllInvUpdateCountMonthly(month: String): Flow<Int?>
+
 }

@@ -3,6 +3,7 @@ package com.inv.e_inventoryupdate.repository
 import com.inv.e_inventoryupdate.data.local_storage.StockDao
 import com.inv.e_inventoryupdate.model.StockEntity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class StockRepository(private val stockDao: StockDao) {
 
@@ -40,5 +41,11 @@ class StockRepository(private val stockDao: StockDao) {
     suspend fun getAllStockUpdateCount(): Int {
 //        val today = "" // You can pass an empty string since query doesn’t use 'today'
         return stockDao.getAllInvUpdateCount()
+    }
+
+
+    fun getAllInvUpdateCountMonthly(month: String): Flow<Int> {
+        return stockDao.getAllInvUpdateCountMonthly(month)
+            .map { total -> total ?: 0 }  // Convert NULL to 0
     }
 }
