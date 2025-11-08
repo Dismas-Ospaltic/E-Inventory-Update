@@ -24,6 +24,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.inv.e_inventoryupdate.R
 import com.inv.e_inventoryupdate.ui_screen.ui_components.AppStatusBarDynamicColor
+import com.inv.e_inventoryupdate.ui_screen.ui_components.EditSupplierPop
+import com.inv.e_inventoryupdate.ui_screen.ui_components.SupplierActionsPop
 import com.inv.e_inventoryupdate.viewmodel.SupplierViewModel
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
@@ -44,6 +46,13 @@ fun SupplierScreen(navController: NavController) {
 //    val items by itemViewModel.items.collectAsState()
     val supplierViewModel: SupplierViewModel = koinViewModel()
     val suppliers by supplierViewModel.suppliers.collectAsState(initial = emptyList())
+    var showSupplierActionDialog by remember { mutableStateOf(false) }
+    var selectedISupplierId by remember { mutableStateOf<String?>(null) }
+    var selectedSupplierName by remember { mutableStateOf<String?>(null) }
+    var selectedSupplierPhone by remember { mutableStateOf<String?>(null) }
+    var selectedSupplierEmail by remember { mutableStateOf<String?>(null) }
+    var selectedSupplierAddress by remember { mutableStateOf<String?>(null) }
+
 
 
 
@@ -158,13 +167,17 @@ fun SupplierScreen(navController: NavController) {
 
                        val supplier = filteredSuppliers[index]
 
-                           Card(
+                       Card(
                                modifier = Modifier
                                    .fillMaxWidth()
                                    .padding(horizontal = 4.dp, vertical = 2.dp)
                                    .clickable {
-
-
+                                       showSupplierActionDialog = true
+                                       selectedISupplierId = supplier.supplierId
+                                      selectedSupplierName = supplier.supplierName
+                                       selectedSupplierPhone  = supplier.supplierPhone
+                                        selectedSupplierEmail  = supplier.supplierEmail
+                                     selectedSupplierAddress = supplier.supplierAddress
                                    },
                                shape = RoundedCornerShape(4.dp),
                                elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
@@ -350,6 +363,20 @@ fun SupplierScreen(navController: NavController) {
 
     }
 
+
+
+
+    if (showSupplierActionDialog) {
+        SupplierActionsPop(
+            onDismiss = {  showSupplierActionDialog = false },
+            supplierId = selectedISupplierId.toString(),
+            supplierName =selectedSupplierName.toString(),
+            supplierPhone =selectedSupplierPhone.toString(),
+            supplierEmail = selectedSupplierEmail.toString(),
+            supplierAddress = selectedSupplierAddress.toString(),
+        )
+
+    }
 
 }
 

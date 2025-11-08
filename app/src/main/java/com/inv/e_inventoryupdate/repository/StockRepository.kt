@@ -48,4 +48,14 @@ class StockRepository(private val stockDao: StockDao) {
         return stockDao.getAllInvUpdateCountMonthly(month)
             .map { total -> total ?: 0 }  // Convert NULL to 0
     }
+
+    // ✅ Total count of all returned inventory
+    suspend fun getAllReturnedInvUpdateCount(): Int {
+        return stockDao.getAllReturnedInvUpdateCount()
+    }
+
+    // ✅ Monthly count of returned inventory (e.g. "2025-11")
+    fun getAllReturnedInvUpdateCountMonthly(month: String): Flow<Int?> {
+        return stockDao.getAllReturnedInvUpdateCountMonthly(month)
+    }
 }

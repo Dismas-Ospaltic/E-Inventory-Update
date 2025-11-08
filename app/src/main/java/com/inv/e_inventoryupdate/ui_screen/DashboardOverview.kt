@@ -47,10 +47,14 @@ fun DashboardOverview(navController: NavController) {
     val totalNoOfUpdatesThisMonth by stockViewmodel.totalNoOfUpdatesThisMonth.collectAsState()
     val stockCount by stockViewmodel.stockCount.collectAsState()
     val activeSupplier by supplierViewModel.activeCount.collectAsState()
+    val totalReturned by stockViewmodel.totalReturnedCount.collectAsState()
+    val monthlyReturned by stockViewmodel.monthlyReturnedCount.collectAsState()
     val currentYearMonth = remember{ YearMonth.now().toString()} // "2025-05"
 
     LaunchedEffect(Unit) {
        stockViewmodel.getAllInvUpdateCountMonthly(currentYearMonth)
+        stockViewmodel.fetchTotalReturnedInvUpdateCount()
+        stockViewmodel.observeMonthlyReturnedInvUpdateCount(currentYearMonth)
     }
 
 
@@ -94,7 +98,7 @@ fun DashboardOverview(navController: NavController) {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "analytics screen",
+                        text = "Summary View",
                         color = colorResource(id = R.color.gray01),
                         fontSize = 16.sp
                     )
@@ -107,7 +111,7 @@ fun DashboardOverview(navController: NavController) {
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     OverviewCard(
-                        title = "No. of Inventory Updates",
+                        title = "Inventory Updates",
                         value = stockCount.toString(),
                         icon = FontAwesomeIcons.Solid.TruckPickup,
                         backgroundColor = Color(0xFF4CAF50) // Green
@@ -115,7 +119,7 @@ fun DashboardOverview(navController: NavController) {
 
 
                     OverviewCard(
-                        title = "No. of Inventory Updates This Month",
+                        title = "Monthly Inventory Updates",
                         value =  totalNoOfUpdatesThisMonth.toString(),
                         icon = FontAwesomeIcons.Solid.TruckPickup,
                         backgroundColor = Color(0xFF4CAF50) // Green
@@ -123,16 +127,16 @@ fun DashboardOverview(navController: NavController) {
 
 
                     OverviewCard(
-                        title = "No. of Returned Stock",
-                        value = "3",
+                        title = "Returned Stock",
+                        value = totalReturned.toString(),
                         icon = FontAwesomeIcons.Solid.TruckLoading,
                         backgroundColor = Color(0xFFFFA000) // Amber
                     )
 
 
                     OverviewCard(
-                        title = "No. of Returned Stock this Month",
-                        value = "3",
+                        title = "Monthly Returned Stock",
+                        value = monthlyReturned.toString(),
                         icon = FontAwesomeIcons.Solid.TruckLoading,
                         backgroundColor = Color(0xFFFFA000) // Amber
                     )

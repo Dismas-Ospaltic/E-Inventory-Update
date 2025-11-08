@@ -150,7 +150,7 @@ fun InventoryScreen(navController: NavController) {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Home screen",
+                        text = "Search an Update",
                         color = colorResource(id = R.color.gray01),
                         fontSize = 16.sp
                     )

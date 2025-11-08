@@ -6,6 +6,7 @@ import com.inv.e_inventoryupdate.model.StockEntity
 import com.inv.e_inventoryupdate.repository.StockRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -83,6 +84,29 @@ class StockViewModel(private val stockRepository: StockRepository) : ViewModel()
         viewModelScope.launch {
             stockRepository.getAllInvUpdateCountMonthly(currentYearMonth).collectLatest { total ->
                 _totalNoOfUpdateThisMonth.value = total
+            }
+        }
+    }
+
+    private val _totalReturnedCount = MutableStateFlow(0)
+    val totalReturnedCount: StateFlow<Int> = _totalReturnedCount.asStateFlow()
+
+    private val _monthlyReturnedCount = MutableStateFlow<Int?>(null)
+    val monthlyReturnedCount: StateFlow<Int?> = _monthlyReturnedCount.asStateFlow()
+
+    // ✅ Fetch total returned count (one-time)
+    fun fetchTotalReturnedInvUpdateCount() {
+        viewModelScope.launch {
+            val count = stockRepository.getAllReturnedInvUpdateCount()
+            _totalReturnedCount.value = count
+        }
+    }
+
+    // ✅ Observe monthly returned count (reactive via Flow)
+    fun observeMonthlyReturnedInvUpdateCount(month: String) {
+        viewModelScope.launch {
+            stockRepository.getAllReturnedInvUpdateCountMonthly(month).collectLatest { count ->
+                _monthlyReturnedCount.value = count
             }
         }
     }
