@@ -27,10 +27,14 @@ interface ReturnDao {
     suspend fun getAllReturnsOnce(): List<ReturnEntity>  // One-time fetch for ViewModel check
 
 
-    @Query("SELECT * FROM returns WHERE stockId = :stockId")
-    fun getItemReturnById(stockId: String): Flow<List<ReturnEntity>>
+//    @Query("SELECT * FROM returns WHERE stockId = :stockId")
+//    fun getItemReturnById(stockId: String): Flow<List<ReturnEntity>>
 
-        // 🔹 Count all returns
+    @Query("SELECT * FROM returns WHERE stockId = :stockId LIMIT 1")
+    fun getItemReturnById(stockId: String): Flow<ReturnEntity?>
+
+
+    // 🔹 Count all returns
     @Query("SELECT COUNT(*) FROM returns")
     suspend fun getAllReturnsCount(): Int
 

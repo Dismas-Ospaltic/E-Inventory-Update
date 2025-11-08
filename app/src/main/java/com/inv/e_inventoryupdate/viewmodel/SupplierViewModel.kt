@@ -84,6 +84,11 @@ class SupplierViewModel(private val supplierRepository: SupplierRepository) : Vi
     private val _suppliers = MutableStateFlow<List<SupplierEntity>>(emptyList())
     val suppliers: StateFlow<List<SupplierEntity>> = _suppliers
 
+
+    private val _dormantSuppliers = MutableStateFlow<List<SupplierEntity>>(emptyList())
+    val dormantSuppliers: StateFlow<List<SupplierEntity>> = _dormantSuppliers
+
+
     private val _activeCount = MutableStateFlow(0)
     val activeCount: StateFlow<Int> = _activeCount
 
@@ -99,6 +104,7 @@ class SupplierViewModel(private val supplierRepository: SupplierRepository) : Vi
     init {
         getAllSuppliers()
         refreshCounts()
+        getAllDormantSuppliers()
     }
 
     // ✅ Get all suppliers
@@ -109,6 +115,18 @@ class SupplierViewModel(private val supplierRepository: SupplierRepository) : Vi
             }
         }
     }
+
+
+    // ✅ Get all suppliers
+    private fun getAllDormantSuppliers() {
+        viewModelScope.launch {
+            supplierRepository.getAllDormantSuppliers().collectLatest { list ->
+                _dormantSuppliers.value = list
+            }
+        }
+    }
+
+
 
     // ✅ Insert new supplier
     fun insertSupplier(supplier: SupplierEntity) {

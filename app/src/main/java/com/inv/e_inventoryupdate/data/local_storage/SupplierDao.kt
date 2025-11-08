@@ -18,8 +18,11 @@ interface SupplierDao {
     @Update
     suspend fun updateSupplier(supplier: SupplierEntity)
 
-    @Query("SELECT * FROM suppliers ORDER BY timestamp DESC")
+    @Query("SELECT * FROM suppliers WHERE status = 'active' ORDER BY timestamp DESC")
     fun getAllSuppliers(): Flow<List<SupplierEntity>>
+
+    @Query("SELECT * FROM suppliers WHERE status = 'dormant' ORDER BY timestamp DESC")
+    fun getAllDormantSuppliers(): Flow<List<SupplierEntity>>
 
     @Query("SELECT * FROM suppliers")
     suspend fun getAllSuppliersOnce(): List<SupplierEntity>  // One-time fetch for ViewModel check

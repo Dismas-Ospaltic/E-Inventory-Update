@@ -50,6 +50,7 @@ import compose.icons.fontawesomeicons.Regular
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.regular.Edit
 import compose.icons.fontawesomeicons.regular.TrashAlt
+import compose.icons.fontawesomeicons.solid.ClipboardList
 import compose.icons.fontawesomeicons.solid.Truck
 import compose.icons.fontawesomeicons.solid.TruckLoading
 import org.koin.androidx.compose.koinViewModel
@@ -73,6 +74,8 @@ fun InvActionPop(
     var showReturnDialog by remember { mutableStateOf(false) }
     var showReturnActionDialog by remember { mutableStateOf(false)}
     var showSupplierDetDialog by remember { mutableStateOf(false) }
+    var showReturnReasonDialog by remember { mutableStateOf(false) }
+
 
     val supplierViewModel: SupplierViewModel = koinViewModel()
     val supplierList by supplierViewModel.suppliers.collectAsState(initial = emptyList())
@@ -121,6 +124,25 @@ fun InvActionPop(
                     Text(text = "View Supplier", fontSize = 16.sp)
                 }
 
+                if (status == "return") {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            showReturnReasonDialog = true
+                        }
+                        .padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = FontAwesomeIcons.Solid.ClipboardList,
+                        contentDescription = "reason",
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(text = "View Return Reason", fontSize = 16.sp)
+                }
+            }
 
                 if (status == "inward") {
                     Row(
@@ -198,14 +220,12 @@ fun InvActionPop(
 
 
 
-
     if (showReturnActionDialog) {
         ReturnStockPop(
             onDismiss = {  showReturnActionDialog = false ;
                 onDismiss()},
             stockId = stockId
         )
-
     }
 
     if (showSupplierDetDialog) {
@@ -216,6 +236,17 @@ fun InvActionPop(
         )
 
     }
+
+    if (showReturnReasonDialog) {
+        ReturnReasonPop(
+            onDismiss = {  showReturnReasonDialog = false ;
+                onDismiss()},
+            stockId = stockId
+        )
+
+    }
+
+
 
 
 }

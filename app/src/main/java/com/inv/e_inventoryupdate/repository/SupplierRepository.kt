@@ -9,6 +9,11 @@ class SupplierRepository(private val supplierDao: SupplierDao) {
 
     fun getAllSuppliers(): Flow<List<SupplierEntity>> = supplierDao.getAllSuppliers()
 
+
+    fun getAllDormantSuppliers(): Flow<List<SupplierEntity>> = supplierDao.getAllDormantSuppliers()
+
+
+
     suspend fun getAllSuppliersOnce(): List<SupplierEntity> = supplierDao.getAllSuppliersOnce()
 
     suspend fun insertSupplier(supplier: SupplierEntity) = supplierDao.insertSupplier(supplier)

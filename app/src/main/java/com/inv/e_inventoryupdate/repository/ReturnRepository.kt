@@ -15,8 +15,13 @@ class ReturnRepository(private val returnDao: ReturnDao) {
 
     suspend fun updateStockReturn(returns: ReturnEntity) = returnDao.updateStockReturn(returns)
 
-    fun getItemReturnById(stockId: String): Flow<List<ReturnEntity>> =
-        returnDao.getItemReturnById(stockId)
+//    fun getItemReturnById(stockId: String): Flow<List<ReturnEntity>> =
+//        returnDao.getItemReturnById(stockId)
+
+    // Get a single returned item by stockId
+    fun getItemReturnById(stockId: String): Flow<ReturnEntity?> {
+        return returnDao.getItemReturnById(stockId)
+    }
 
     suspend fun getAllReturnsCount(): Int = returnDao.getAllReturnsCount()
 }

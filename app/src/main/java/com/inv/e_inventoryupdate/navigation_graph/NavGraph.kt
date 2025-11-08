@@ -10,6 +10,7 @@ import androidx.compose.animation.*
 import androidx.compose.ui.Modifier
 import com.inv.e_inventoryupdate.ui_screen.AboutTheAppScreen
 import com.inv.e_inventoryupdate.ui_screen.DashboardOverview
+import com.inv.e_inventoryupdate.ui_screen.DormantSupplierScreen
 import com.inv.e_inventoryupdate.ui_screen.InventoryScreen
 import com.inv.e_inventoryupdate.ui_screen.SettingScreen
 import com.inv.e_inventoryupdate.ui_screen.SupplierScreen
@@ -19,16 +20,14 @@ sealed class Screen(val route: String) {
     object Inventory : Screen("inventory")
     object Settings : Screen("settings")
 
-//    object EditProduct : Screen("editProduct/{itemId}") {
-//        fun createRoute(itemId: String) = "editProduct/$itemId"
-//    }
-
     object Supplier : Screen("supplier")
 
 
     object  OverView : Screen("overview")
 
     object AboutTheApp : Screen("aboutTheApp")
+
+    object DormantSupplier : Screen("dormantSupplier")
 }
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -49,10 +48,7 @@ fun AppNavHost(navController: NavHostController, modifier: Modifier) {
         composable(Screen.OverView.route) { DashboardOverview(navController) }
         composable(Screen.Supplier.route) { SupplierScreen(navController) }
         composable(Screen.AboutTheApp.route) { AboutTheAppScreen(navController) }
-//        composable(Screen.EditProduct.route) { backStackEntry ->
-//            val itemId = backStackEntry.arguments?.getString("itemId") ?: "Unknown"
-//            EditItemScreen(navController, itemId)
-//        }
+        composable(Screen.DormantSupplier.route) { DormantSupplierScreen(navController) }
 
 
 

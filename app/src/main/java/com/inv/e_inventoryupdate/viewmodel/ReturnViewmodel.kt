@@ -6,6 +6,7 @@ import com.inv.e_inventoryupdate.model.ReturnEntity
 import com.inv.e_inventoryupdate.repository.ReturnRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -45,6 +46,18 @@ class ReturnViewModel(private val returnRepository: ReturnRepository) : ViewMode
     fun refreshReturnsCount() {
         viewModelScope.launch {
             _returnsCount.value = returnRepository.getAllReturnsCount()
+        }
+    }
+
+    private val _returnItem = MutableStateFlow<ReturnEntity?>(null)
+    val returnItem: StateFlow<ReturnEntity?> = _returnItem.asStateFlow()
+
+    fun loadReturnItem(stockId: String) {
+        viewModelScope.launch {
+            returnRepository.getItemReturnById(stockId)
+                .collect { item ->
+                    _returnItem.value = item
+                }
         }
     }
 }

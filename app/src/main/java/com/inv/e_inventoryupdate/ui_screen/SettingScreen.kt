@@ -1,6 +1,7 @@
 package com.inv.e_inventoryupdate.ui_screen
 
 
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -22,7 +23,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import com.inv.e_inventoryupdate.R
+import com.inv.e_inventoryupdate.navigation_graph.Screen
 import com.inv.e_inventoryupdate.ui_screen.ui_components.AppStatusBarDynamicColor
 import com.inv.e_inventoryupdate.ui_screen.ui_components.CardsForSettings
 import compose.icons.FontAwesomeIcons
@@ -33,6 +36,7 @@ import compose.icons.fontawesomeicons.solid.ExclamationCircle
 import compose.icons.fontawesomeicons.solid.InfoCircle
 import compose.icons.fontawesomeicons.solid.Lock
 import compose.icons.fontawesomeicons.solid.ShieldAlt
+import compose.icons.fontawesomeicons.solid.Users
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -89,6 +93,17 @@ fun SettingScreen(navController: NavController) {
                         fontSize = 16.sp
                     )
                 }
+
+                CardsForSettings(
+                    title = "Dormant Suppliers",
+                    subtitle = "View Archived Suppliers.",
+                    icon = FontAwesomeIcons.Solid.Users,
+                    iconTint = colorResource(id = R.color.bleu_de_france),
+                    onClick = {
+                        navController.navigate(Screen.DormantSupplier.route)
+                    }
+                )
+
                 CardsForSettings(
                     // Privacy Policy Card
                     title = "Privacy Policy",
@@ -97,6 +112,11 @@ fun SettingScreen(navController: NavController) {
                     iconTint = colorResource(id = R.color.coral),
                     onClick = {
                         // Navigate to Privacy Policy screen
+                        val intent = Intent(
+                            Intent.ACTION_VIEW,
+                            "https://systro-dev-apps.github.io/E_Inventory_App/privacy_policy.html".toUri()
+                        )
+                        context.startActivity(intent)
                     }
                 )
 
@@ -108,6 +128,7 @@ fun SettingScreen(navController: NavController) {
                     iconTint = colorResource(id = R.color.yellow_green),
                     onClick = {
                         // Navigate to About screen
+                        navController.navigate(Screen.AboutTheApp.route)
                     }
                 )
 

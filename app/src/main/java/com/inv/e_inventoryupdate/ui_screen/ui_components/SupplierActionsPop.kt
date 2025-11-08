@@ -48,6 +48,7 @@ import com.inv.e_inventoryupdate.viewmodel.SupplierViewModel
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Regular
 import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.regular.Clipboard
 import compose.icons.fontawesomeicons.regular.Edit
 import compose.icons.fontawesomeicons.regular.TrashAlt
 import compose.icons.fontawesomeicons.solid.Truck
@@ -137,12 +138,12 @@ fun SupplierActionsPop(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            imageVector = FontAwesomeIcons.Regular.TrashAlt,
-                            contentDescription = "Delete supplier",
+                            imageVector = FontAwesomeIcons.Regular.Clipboard,
+                            contentDescription = "Archive supplier",
                             modifier = Modifier.size(20.dp)
                         )
                         Spacer(modifier = Modifier.width(12.dp))
-                        Text(text = "Delete Supplier", fontSize = 16.sp)
+                        Text(text = "Archive Supplier", fontSize = 16.sp)
                     }
 
 
@@ -154,16 +155,17 @@ fun SupplierActionsPop(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Delete Supplier") },
-            text = { Text("Delete Supplier permanently from the list?") },
+            title = { Text("Archive Supplier") },
+            text = { Text("Move Supplier to Archive?") },
             confirmButton = {
                 TextButton(onClick = {
-                    supplierViewModel.deleteSupplier(supplierId)
-                    Toast.makeText(context, "supplier deleted", Toast.LENGTH_SHORT).show()
+//                    supplierViewModel.deleteSupplier(supplierId)
+                    supplierViewModel.updateSupplierStatus(supplierId,"dormant")
+                    Toast.makeText(context, "supplier Archived", Toast.LENGTH_SHORT).show()
                     showDeleteDialog = false
                     onDismiss()
                 }) {
-                    Text("Delete", color = colorResource(id = R.color.coral))
+                    Text("Archive", color = colorResource(id = R.color.coral))
                 }
             },
             dismissButton = {
