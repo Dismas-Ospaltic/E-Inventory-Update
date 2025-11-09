@@ -125,7 +125,7 @@ dependencies {
 // ==========================
 // Use for animated vector graphics (.json or .lottie files)
 // implementation("com.github.LottieFiles:dotlottie-android:0.9.3")
-// implementation("com.airbnb.android:lottie-compose:6.1.0")
+ implementation("com.airbnb.android:lottie-compose:6.7.1")
 
     //
     implementation("io.coil-kt:coil-compose:2.4.0")
