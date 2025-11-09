@@ -2,10 +2,12 @@ package com.inv.e_inventoryupdate.di
 
 
 
+import com.inv.e_inventoryupdate.data.datastore.AppTourPreferencesManager
 import com.inv.e_inventoryupdate.data.local_storage.AppDatabase
 import com.inv.e_inventoryupdate.repository.ReturnRepository
 import com.inv.e_inventoryupdate.repository.StockRepository
 import com.inv.e_inventoryupdate.repository.SupplierRepository
+import com.inv.e_inventoryupdate.viewmodel.AppTourViewModel
 import com.inv.e_inventoryupdate.viewmodel.ReturnViewModel
 import com.inv.e_inventoryupdate.viewmodel.StockViewModel
 import com.inv.e_inventoryupdate.viewmodel.SupplierViewModel
@@ -15,6 +17,12 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 
 val appModule = module {
 //  Define ViewModel injection
+
+    // Define ViewModel injection
+    viewModel { AppTourViewModel(get()) }
+
+    // Define PreferencesManager injection
+    single { AppTourPreferencesManager(get()) }
 
     single{ AppDatabase.getDatabase(get()).stockDao() }
     single { StockRepository(get()) }

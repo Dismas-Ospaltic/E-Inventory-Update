@@ -28,6 +28,7 @@ import com.inv.e_inventoryupdate.R
 import com.inv.e_inventoryupdate.navigation_graph.Screen
 import com.inv.e_inventoryupdate.ui_screen.ui_components.AppStatusBarDynamicColor
 import com.inv.e_inventoryupdate.ui_screen.ui_components.CardsForSettings
+import com.inv.e_inventoryupdate.viewmodel.AppTourViewModel
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.ChalkboardTeacher
@@ -37,6 +38,7 @@ import compose.icons.fontawesomeicons.solid.InfoCircle
 import compose.icons.fontawesomeicons.solid.Lock
 import compose.icons.fontawesomeicons.solid.ShieldAlt
 import compose.icons.fontawesomeicons.solid.Users
+import org.koin.androidx.compose.getViewModel
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -47,6 +49,9 @@ fun SettingScreen(navController: NavController) {
     val backgroundColor = colorResource(id = R.color.baby_powder)
     AppStatusBarDynamicColor(backgroundColor)
     val context = LocalContext.current
+
+    val mainViewModel: AppTourViewModel = getViewModel()
+
 
     Scaffold(
         topBar = {
@@ -140,6 +145,8 @@ fun SettingScreen(navController: NavController) {
                     iconTint = colorResource(id = R.color.teal_700),
                     onClick = {
                         // Navigate to App Tour screen
+                        mainViewModel.clearOnboarding()
+                        navController.navigate(Screen.Onboarding.route)
                     }
                 )
 

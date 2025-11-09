@@ -28,4 +28,12 @@ class AppTourPreferencesManager(private val context: Context) {
             preferences[onboardingKey] = true
         }
     }
+
+
+    // ✅ Clear onboarding status (mark as not completed)
+    suspend fun clearOnboarding() {
+        context.dataStore.edit { preferences ->
+            preferences.remove(onboardingKey)
+        }
+    }
 }
